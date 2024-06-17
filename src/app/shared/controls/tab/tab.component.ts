@@ -1,6 +1,6 @@
-import { Component, inject, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TabbedPaneComponent } from '../tabbed-pane/tabbed-pane.component';
+import { of } from "rxjs";
 
 @Component({
   selector: 'app-tab',
@@ -8,8 +8,10 @@ import { TabbedPaneComponent } from '../tabbed-pane/tabbed-pane.component';
   imports: [CommonModule],
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabComponent {
   @Input() title = '';
-  visible = true;
+  visible = signal(true);
+  public obs$ = of([1,2,3]);
 }

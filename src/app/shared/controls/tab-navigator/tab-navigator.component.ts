@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabbedPaneService } from "../tabbed-pane/tabbed-pane.service";
 
@@ -8,6 +8,7 @@ import { TabbedPaneService } from "../tabbed-pane/tabbed-pane.service";
   imports: [CommonModule],
   templateUrl: './tab-navigator.component.html',
   styleUrls: ['./tab-navigator.component.css'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabNavigatorComponent {
   service = inject(TabbedPaneService);

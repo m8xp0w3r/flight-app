@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterViewInit, ChangeDetectionStrategy,
   Component,
   ContentChildren,
   effect,
@@ -19,6 +19,7 @@ import { TabbedPaneService } from "./tabbed-pane.service";
   templateUrl: './tabbed-pane.component.html',
   styleUrls: ['./tabbed-pane.component.css'],
   imports: [CommonModule, TabNavigatorComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TabbedPaneComponent implements AfterViewInit {
   @ContentChildren(TabComponent)
@@ -30,7 +31,6 @@ export class TabbedPaneComponent implements AfterViewInit {
 
   activeTab: TabComponent | undefined;
 
-  currentPage: Signal<number> = this.service.currentPage
   activeTabIndex = this.service.activeTab;
 
   constructor() {
@@ -45,7 +45,7 @@ export class TabbedPaneComponent implements AfterViewInit {
 
   activate(active: TabComponent): void {
     for (const tab of this.tabs) {
-      tab.visible = tab === active;
+      tab.visible.set(tab === active);
     }
     this.activeTab = active;
   }

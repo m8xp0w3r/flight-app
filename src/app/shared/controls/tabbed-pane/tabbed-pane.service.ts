@@ -1,22 +1,14 @@
-import { effect, Injectable, signal } from '@angular/core';
+import { computed, effect, Injectable, signal } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TabbedPaneService {
-  private _activeTab = signal(0);
   private _pageCount = signal(0);
-  private _currentPage = signal(1);
-  public activeTab = this._activeTab.asReadonly();
+  private _currentPage = signal(0);
+  public activeTab = computed(() => this.currentPage());
   public pageCount = this._pageCount.asReadonly();
   public currentPage = this._currentPage.asReadonly();
-
-  constructor() {
-    effect(() => {
-      const currentPage = this.currentPage();
-      this._activeTab.set(currentPage - 1);
-    }, {allowSignalWrites: true});
-  }
 
   public setPageCount(pageCount: number) {
     this._pageCount.set(pageCount);
@@ -30,9 +22,11 @@ export class TabbedPaneService {
     let currentCount: number = this._currentPage();
     const pageCount: number = this._pageCount();
     currentCount--;
-    if (currentCount < 1) {
-      currentCount = pageCount;
+
+    if (currentCount < 0) {
+      currentCount = pageCount - 1;
     }
+
     this.setCurrentPage(currentCount);
   }
 
@@ -40,8 +34,8 @@ export class TabbedPaneService {
     let currentCount: number = this._currentPage();
     const pageCount: number = this._pageCount();
     currentCount++;
-    if (currentCount > pageCount) {
-      currentCount = 1;
+    if (currentCount >= pageCount) {
+      currentCount = 0;
     }
     this.setCurrentPage(currentCount);
   }
