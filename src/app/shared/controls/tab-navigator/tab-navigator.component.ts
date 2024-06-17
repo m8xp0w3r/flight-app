@@ -1,5 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TabbedPaneService } from "../tabbed-pane/tabbed-pane.service";
 
 @Component({
   selector: 'app-tab-navigator',
@@ -9,23 +10,16 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./tab-navigator.component.css'],
 })
 export class TabNavigatorComponent {
-  @Input() page = 0;
-  @Input() pageCount = 0;
-  @Output() pageChange = new EventEmitter<number>();
+  service = inject(TabbedPaneService);
+
+  pageCount = this.service.pageCount;
+  currentPage = this.service.currentPage;
 
   prev(): void {
-    this.page--;
-    if (this.page < 0) {
-      this.page = this.pageCount - 1;
-    }
-    this.pageChange.emit(this.page);
+    this.service.prev();
   }
 
   next(): void {
-    this.page++;
-    if (this.page >= this.pageCount) {
-      this.page = 0;
-    }
-    this.pageChange.emit(this.page);
+    this.service.next();
   }
 }

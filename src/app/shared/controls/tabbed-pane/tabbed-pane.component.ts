@@ -1,12 +1,17 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
   Component,
   ContentChildren,
+  effect,
+  inject,
   QueryList,
+  Signal,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabComponent } from '../tab/tab.component';
 import { TabNavigatorComponent } from '../tab-navigator/tab-navigator.component';
+import { TabbedPaneService } from "./tabbed-pane.service";
 
 @Component({
   selector: 'app-tabbed-pane',
@@ -15,26 +20,27 @@ import { TabNavigatorComponent } from '../tab-navigator/tab-navigator.component'
   styleUrls: ['./tabbed-pane.component.css'],
   imports: [CommonModule, TabNavigatorComponent],
 })
-export class TabbedPaneComponent implements AfterContentInit {
+export class TabbedPaneComponent implements AfterViewInit {
   @ContentChildren(TabComponent)
   tabQueryList: QueryList<TabComponent> | undefined;
 
+  @ViewChild('navigator')
+  navigator: TabNavigatorComponent | undefined;
+  service: TabbedPaneService = inject(TabbedPaneService);
+
   activeTab: TabComponent | undefined;
 
-  currentPage = 0;
+  currentPage: Signal<number> = this.service.currentPage
+  activeTabIndex = this.service.activeTab;
+
+  constructor() {
+    effect(() => {
+      this.activate(this.tabs[this.activeTabIndex()]);
+    }, {allowSignalWrites: true});
+  }
 
   get tabs(): TabComponent[] {
     return this.tabQueryList?.toArray() ?? [];
-  }
-
-  ngAfterContentInit(): void {
-    if (this.tabs.length > 0) {
-      this.activate(this.tabs[0]);
-    }
-  }
-
-  register(tab: TabComponent): void {
-    this.tabs.push(tab);
   }
 
   activate(active: TabComponent): void {
@@ -42,11 +48,9 @@ export class TabbedPaneComponent implements AfterContentInit {
       tab.visible = tab === active;
     }
     this.activeTab = active;
-
-    this.currentPage = this.tabs.indexOf(active);
   }
 
-  pageChange(page: number): void {
-    this.activate(this.tabs[page]);
+  ngAfterViewInit(): void {
+    this.service.setPageCount(this.tabs.length);
   }
 }

@@ -1,18 +1,22 @@
 <div class="tabbed-pane">
-  <div class="navigation">
+    <div class="navigation">
     <span *ngFor="let tab of tabs" class="tab-link">
       <a [ngClass]="{ active: tab == activeTab }" (click)="activate(tab)">{{
-        tab.title
-      }}</a>
+			  tab.title
+          }}</a>
     </span>
-  </div>
+    </div>
 
-  <ng-content></ng-content>
+    <ng-content></ng-content>
 
-  <app-tab-navigator
-    [page]="this.currentPage"
-    [pageCount]="this.tabs.length"
-    (pageChange)="pageChange($event)"
-  >
-  </app-tab-navigator>
+    <app-tab-navigator
+		#navigator
+    >
+    </app-tab-navigator>
+    <p>&nbsp;</p>
+    <div>
+        <button (click)="navigator.prev()">Prev</button>
+        {{ navigator.currentPage() }}
+        <button (click)="navigator.next()">Next</button>
+    </div>
 </div>
