@@ -4,6 +4,7 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { NextFlightsModule } from './next-flights/next-flights.module';
 import { ConfigService } from './shared/config.service';
 import { SidebarComponent } from './sidebar/sidebar.component';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from "@angular/forms";
 
 @Component({
   standalone: true,
@@ -22,9 +23,11 @@ export class AppComponent {
 
   configService = inject(ConfigService);
 
+
   constructor() {
     // TODO: In a later lab, we will assure that
     //  loading did happen _before_ we use the config!
     this.configService.loadConfig();
+    const x = new FormControl("", { updateOn: "blur"})
   }
 }
